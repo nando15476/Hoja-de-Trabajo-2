@@ -1,14 +1,10 @@
 /*
  * Fernando Hernandez 15476
- * Daniel Morales 15526
  * Rodrigo Corona 15102
  */
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 
 /**
  * 
@@ -25,7 +21,7 @@ public class Principal {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		FileReader file = new FileReader("prueba.txt");
+		FileReader file = new FileReader("datos.txt");
 		BufferedReader reader = new BufferedReader(file);
 		String text = reader.readLine();
 		Character character;
@@ -42,18 +38,18 @@ public class Principal {
 			while(x == 1){
 				try{
 					op.addChar(text.substring(n - 1, n));
-					num1 = Integer.parseInt(op.returnChar().getCharacter());
+					num1 = Math.round(Double.parseDouble(op.returnChar().getCharacter()) * 100) / 100.0;
 					System.out.println("******************************************************\n"
 							+ "Entrada     Operacion          Pila\n" + num1 + "        push operando       " + num1);
 					x = 0;
 				}
-				catch(Exception e){
+				catch(NumberFormatException e){
 					n++;
 					x = 1;
 				}
 			}
 			
-			int num2 = 0;
+			double num2 = 0;
 			String operacion;
 			
 			//Este ciclo recorre la linea y hace las poeraciones
@@ -62,14 +58,21 @@ public class Principal {
 				
 				//Este try/catch identifica si los caracteres son numeros, espacios u operadores
 				try{
-					num2 = Integer.parseInt(op.returnChar().getCharacter());
-					System.out.println(num2 + "          push operando       " + num1 + ", " + num2);
+					num2 = Math.round(Double.parseDouble(op.returnChar().getCharacter()) * 100) / 100.0;
+					System.out.println(num2 + "        push operando       " + Math.round(num1 * 100) / 100.0 + ", " + num2);
 					n++;
 				}
-				catch(Exception e){
+				catch(NumberFormatException e){
 					op.addChar(text.substring(n, n + 1));
-					if(op.returnChar().getCharacter().equals(" ")){
-						n++;
+					
+					//Este if hace que ignore cualquier cosa que no sea numero u operacion
+					if(op.operacion((op.returnChar().getCharacter())) == null){
+						try{
+							Double.parseDouble(op.returnChar().getCharacter());
+						}
+						catch(NumberFormatException e1){
+							n++;
+						}
 					}
 					else{
 						num1 = op.operacion(op.returnChar().getCharacter(), num1, num2);
